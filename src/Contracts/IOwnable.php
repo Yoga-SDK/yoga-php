@@ -2,7 +2,7 @@
 
 namespace Yoga\Contracts;
 
-interface Ownable
+interface IOwnable
 {  
   /**
    * Returns the owner on the created hook

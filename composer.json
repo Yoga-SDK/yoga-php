@@ -9,7 +9,9 @@
             "email": "gustavo.boas@startaideia.com.br"
         }
     ],
-    "require": {},
+    "require": {
+        "doctrine/dbal": "^2.10"
+    },
     "autoload": {
         "psr-4": {
             "Yoga\\": "src/"
