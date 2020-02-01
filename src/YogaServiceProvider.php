@@ -23,6 +23,6 @@ class YogaServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        dd('aqui');
+        $this->loadMigrationsFrom(__DIR__.'/../database');
     }
 }
