@@ -73,6 +73,17 @@ trait IdentityAndPassword
       'expires_at' => date('Y-m-d H:i:s', strtotime('+1 day'))
     ]);
   }
+
+  function refreshToken()
+  {
+    $user = Auth::guard(config('yoga.auth.guard'))->user();
+    $user->createToken();
+    return Yoga::resolve([
+      'access_token' => $user->getAccessToken(),
+      'token_type' => 'Bearer',
+      'expires_at' => date('Y-m-d H:i:s', strtotime('+1 day'))
+    ]);
+  }
 }
 
 // End of file

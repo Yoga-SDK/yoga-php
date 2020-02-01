@@ -12,9 +12,9 @@ class Yoga
     return $default;
   }
 
-  static function reject($data)
+  static function reject($data, $status = 400)
   {
-    return response(['data' => $data], 400);
+    return response(['data' => $data], $status);
   }
 
   static function resolve($data)
@@ -24,15 +24,17 @@ class Yoga
 
   static function registerAuthRoutes()
   {
-    $attributes = [
-      'prefix' => config('yoga.routes.prefix'),
-      'middleware' => config('yoga.routes.middlewares')
-    ];
+    $globalAttributes = config('yoga.routes.global');
+    $authAttributes   = array_merge($globalAttributes, config('yoga.routes.auth', []));
+    $guestAttributes  = array_merge($globalAttributes, config('yoga.routes.guest', []));
+    $controller       = config('yoga.auth.controller').'@';
 
-    app('router')->group($attributes, function($router) {
-      $controller = config('yoga.auth.controller').'@';
-
+    app('router')->group($guestAttributes, function($router) use ($controller) {
       $router->post('/auth/login', $controller.'doLogin');
+    });
+
+    app('router')->group($authAttributes, function($router) use ($controller) {
+      $router->post('/auth/refreshToken', $controller.'refreshToken');
     });
   }
 }
