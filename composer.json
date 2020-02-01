@@ -1,0 +1,25 @@
+{
+    "name": "starta/yoga",
+    "description": "Yoga SDK for PHP",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gustavo Vilas Bôas",
+            "email": "gustavo.boas@startaideia.com.br"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Yoga\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Yoga\\YogaServiceProvider"
+            ]
+        }
+    }
+}
