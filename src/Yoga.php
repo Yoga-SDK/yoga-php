@@ -30,10 +30,14 @@ class Yoga
     $controller       = config('yoga.auth.controller').'@';
 
     app('router')->group($guestAttributes, function($router) use ($controller) {
+      $router->get('/', function() {
+        return Yoga::resolve(['version' => '1.0.0']);
+      });
       $router->post('/auth/login', $controller.'doLogin');
     });
 
     app('router')->group($authAttributes, function($router) use ($controller) {
+      $router->get('/auth/me', $controller.'getProfile');
       $router->post('/auth/refreshToken', $controller.'refreshToken');
     });
   }

@@ -47,7 +47,11 @@ trait IdentityAndPassword
 
   function doLogin(Request $request)
   {
-    $validator = $this->validate($request->input('credentials', []));
+    try {
+      $validator = $this->validate($request->input('credentials', []));
+    } catch (\Throwable $e) {
+      return Yoga::reject($e->getMessage());
+    }
 
     if ($validator->fails()) {
       return Yoga::reject($validator->errors());
@@ -83,6 +87,12 @@ trait IdentityAndPassword
       'token_type' => 'Bearer',
       'expires_at' => date('Y-m-d H:i:s', strtotime('+1 day'))
     ]);
+  }
+
+  function getProfile()
+  {
+    $user = Auth::guard(config('yoga.auth.guard'))->user();
+    return Yoga::resolve($user);
   }
 }
 
