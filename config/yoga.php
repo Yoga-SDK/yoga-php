@@ -19,7 +19,7 @@ return [
     'guest' => [] 
   ],
   'resources' => [
-    'me'
+    'me' => Yoga\Resources\Me::class
   ]
 ];
 
