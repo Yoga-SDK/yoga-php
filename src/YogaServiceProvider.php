@@ -30,5 +30,9 @@ class YogaServiceProvider extends ServiceProvider
         ], 'config');
         $this->mergeConfigFrom(__DIR__.'/../config/yoga.php', 'yoga');
         $this->loadMigrationsFrom(__DIR__.'/../database');
+
+        if (config('yoga.auth.enabled')) {
+            Yoga::registerAuthRoutes();
+        }
     }
 }

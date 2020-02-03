@@ -2,6 +2,7 @@
 
 return [
   'auth' => [
+    'enabled' => true,
     'guard' => 'api',
     'users_table' => 'users',
     'api_tokens'  => true,
@@ -17,7 +18,9 @@ return [
     ],
     'guest' => [] 
   ],
-  'resources' => []
+  'resources' => [
+    'me'
+  ]
 ];
 
 // End of file
