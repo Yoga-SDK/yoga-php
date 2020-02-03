@@ -16,7 +16,8 @@ return [
       'middleware' => ['api', 'auth:api']
     ],
     'guest' => [] 
-  ]
+  ],
+  'resources' => []
 ];
 
 // End of file

@@ -34,6 +34,7 @@ class Yoga
         return Yoga::resolve(['version' => '1.0.0']);
       });
       $router->post('/auth/login', $controller.'doLogin');
+      $router->post('/server', '\Yoga\Controllers\YogaServerController@index');
     });
 
     app('router')->group($authAttributes, function($router) use ($controller) {
