@@ -6,7 +6,8 @@ return [
     'guard' => 'api',
     'users_table' => 'users',
     'api_tokens'  => true,
-    'controller' => ''
+    'controller' => '\Yoga\Controllers\AuthController',
+    'model' => \App\User::class
   ],
   'routes' => [
     'global' => [
