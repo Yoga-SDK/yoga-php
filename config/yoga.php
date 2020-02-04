@@ -6,7 +6,13 @@ return [
     'guard' => 'api',
     'users_table' => 'users',
     'api_tokens'  => true,
-    'controller' => ''
+    'controller' => '',
+    'enable_create_user' => true,
+    'create_user_rules' => [
+      'name' => 'required|min:2',
+      'email' => 'required|email',
+      'password' => 'required|min:6|max:16'
+    ]
   ],
   'routes' => [
     'global' => [
