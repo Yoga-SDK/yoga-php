@@ -34,6 +34,7 @@ class Yoga
         return Yoga::resolve(['version' => '1.0.0']);
       });
       $router->post('/auth/login', $controller.'doLogin');
+      $router->post('/auth/signup', $controller.'createUser');
       $router->post('/server', '\Yoga\Controllers\YogaServerController@index');
     });
 

@@ -94,6 +94,36 @@ trait IdentityAndPassword
     $user = Auth::guard(config('yoga.auth.guard'))->user();
     return Yoga::resolve($user);
   }
+
+  function createUser(Request $request) 
+  {
+    if (!config('yoga.auth.enable_create_user')) {
+      return Yoga::reject(__('Create users not enable'));
+    }
+
+    // Validar requisição
+
+    $validatedData = $request->validate(
+      config('yoga.auth.create_user_rules', [])
+    );
+
+    $validatedData['password'] = Hash::make($validatedData['password']);
+
+    // Criar novo usuario
+
+    $user = $this->authenticable::create($validatedData);
+
+    // Logar o novo usuario
+
+    $user->createToken();
+
+    return Yoga::resolve([
+      'access_token' => $user->getAccessToken(),
+      'token_type' => 'Bearer',
+      'expires_at' => date('Y-m-d H:i:s', strtotime('+1 day'))
+    ]);
+
+  }
 }
 
 // End of file
