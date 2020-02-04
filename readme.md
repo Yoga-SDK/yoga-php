@@ -106,6 +106,20 @@ In your config file, register then like:
   *******
 ```
 
+## Create user
+To create a user you will need to register the configuration on the config file.
+#### **config/yoga.php**
+``` php
+*****
+'enable_create_user' => true,
+'create_user_rules' => [
+  'name' => 'required|min:2',
+  'email' => 'required|email',
+  'password' => 'required|min:6|max:16'
+]
+*******
+```
+
 Thats all. Your yoga clients can now access your models using yoga client.
 
 # CORS issues
