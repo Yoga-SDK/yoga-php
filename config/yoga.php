@@ -8,11 +8,10 @@ return [
     'api_tokens'  => true,
     'controller' => '\Yoga\Controllers\AuthController',
     'model' => \App\User::class,
-    'controller' => '',
     'enable_create_user' => true,
     'create_user_rules' => [
       'name' => 'required|min:2',
-      'email' => 'required|email',
+      'email' => 'required|email|unique:users,email',
       'password' => 'required|min:6|max:16'
     ]
   ],
