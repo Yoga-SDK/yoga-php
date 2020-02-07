@@ -124,6 +124,35 @@ trait IdentityAndPassword
     ]);
 
   }
+
+  function updateProfile(Request $request) {
+
+    // Verica se possui permissão para editar
+    if (!config('yoga.auth.enable_update_user')) {
+      return Yoga::reject(__('Update users not enable'));
+    }
+    $user = Auth::guard(config('yoga.auth.guard'))->user();
+
+    // Valida os dados
+    $validatedData = $request->validate(
+      collect(config('yoga.auth.update_user_rules', []))->map(function($rule) use ($user) {
+        return join(collect(explode('|', $rule))->map(function($rule) use ($user) {
+          if (strpos($rule, 'unique:') !== false) {
+            return $rule.','.$user->id;
+          } else return $rule;
+        })->toArray(), '|');
+      })->toArray()
+    );
+    if ($validatedData['password']) {
+      $validatedData['password'] = Hash::make($validatedData['password']);
+    }
+
+    // Edita os dados
+    $user->update($validatedData);
+
+    return Yoga::resolve($user);
+  }
+
 }
 
 // End of file

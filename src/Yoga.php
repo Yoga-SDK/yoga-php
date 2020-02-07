@@ -40,6 +40,7 @@ class Yoga
 
     app('router')->group($authAttributes, function($router) use ($controller) {
       $router->get('/auth/me', $controller.'getProfile');
+      $router->put('/auth/updateProfile', $controller.'updateProfile');
       $router->post('/auth/refreshToken', $controller.'refreshToken');
     });
   }

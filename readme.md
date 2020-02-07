@@ -86,7 +86,19 @@ Then in your configuration file, sets the auth.controller to the actual authenti
     'guard' => 'api',
     'users_table' => 'users',
     'api_tokens'  => true,
-    'controller' => 'App\Http\Controllers\AuthController'
+    'controller' => 'App\Http\Controllers\AuthController',
+    'enable_create_user' => true,
+    'create_user_rules' => [
+      'name' => 'required|min:2',
+      'email' => 'required|email',
+      'password' => 'required|min:6|max:16'
+    ],
+    'enable_update_user' => true,
+    'update_user_rules' => [
+      'name' => 'required|min:2',
+      'email' => 'required|email|unique:users,email',
+      'password' => 'nullable|min:6|max:16'
+    ]
   ],
   *******
 ```
@@ -107,16 +119,74 @@ In your config file, register then like:
 ```
 
 ## Create user
-To create a user you will need to register the configuration on the config file.
-#### **config/yoga.php**
+To create a new user you will need to register the configuration on the config file and add the function on the IdentityAndPassword file.
+#### **src/Auth/IdentityAndPassword.php**
 ``` php
 *****
-'enable_create_user' => true,
-'create_user_rules' => [
-  'name' => 'required|min:2',
-  'email' => 'required|email',
-  'password' => 'required|min:6|max:16'
-]
+function createUser(Request $request)
+  {
+    if (!config('yoga.auth.enable_create_user')) {
+      return Yoga::reject(__('Create users not enable'));
+    }
+
+    // Validar requisição
+
+    $validatedData = $request->validate(
+      config('yoga.auth.create_user_rules', [])
+    );
+
+    $validatedData['password'] = Hash::make($validatedData['password']);
+
+    // Criar novo usuario
+
+    $user = $this->authenticable::create($validatedData);
+
+    // Logar o novo usuario
+
+    $user->createToken();
+
+    return Yoga::resolve([
+      'access_token' => $user->getAccessToken(),
+      'token_type' => 'Bearer',
+      'expires_at' => date('Y-m-d H:i:s', strtotime('+1 day'))
+    ]);
+
+  }
+*******
+```
+
+## Update user
+To create a new user you will need to register the configuration on the config file and add the function on the IdentityAndPassword file.
+#### **src/Auth/IdentityAndPassword.php**
+``` php
+*****
+function updateProfile(Request $request) {
+
+    // Verica se possui permissão para editar
+    if (!config('yoga.auth.enable_update_user')) {
+      return Yoga::reject(__('Update users not enable'));
+    }
+    $user = Auth::guard(config('yoga.auth.guard'))->user();
+
+    // Valida os dados
+    $validatedData = $request->validate(
+      collect(config('yoga.auth.update_user_rules', []))->map(function($rule) use ($user) {
+        return join(collect(explode('|', $rule))->map(function($rule) use ($user) {
+          if (strpos($rule, 'unique:') !== false) {
+            return $rule.','.$user->id;
+          } else return $rule;
+        })->toArray(), '|');
+      })->toArray()
+    );
+    if ($validatedData['password']) {
+      $validatedData['password'] = Hash::make($validatedData['password']);
+    }
+
+    // Edita os dados
+    $user->update($validatedData);
+
+    return Yoga::resolve($user);
+  }
 *******
 ```
 
