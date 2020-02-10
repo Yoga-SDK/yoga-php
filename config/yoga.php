@@ -33,6 +33,16 @@ return [
   ],
   'resources' => [
     'me' => Yoga\Resources\Me::class
+  ],
+  'whitelist' => [
+    'where',
+    'with',
+    'orWhere',
+    'whereIn',
+    'order',
+    'create',
+    'update',
+    'destroy'
   ]
 ];
 

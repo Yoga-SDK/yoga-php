@@ -9,9 +9,12 @@ class YogaServerController
 {
   public $resources = [];
 
+  public $callables = [];
+
   function __construct()
   {
     $this->resources = config('yoga.resources');
+    $this->callables = array_merge($this->resources, config('whitelist'));
   }
 
   function index(Request $request)
@@ -20,7 +23,9 @@ class YogaServerController
       $root = $this->resources[$request->resource];
       $result = collect($request->executionList)->reduce(
       function($previousResult, $nextInstruction) {
-          return call_user_func_array([$previousResult, $nextInstruction['method']], $nextInstruction['params']);
+          if (in_array($nextInstruction['method'], $this->callables)) {
+            return call_user_func_array([$previousResult, $nextInstruction['method']], $nextInstruction['params']);
+          }
       }, $root);
       return Yoga::resolve($result);
     } catch (\Throwable $e) {
