@@ -191,3 +191,7 @@ function updateProfile(Request $request) {
 ```
 
 Thats all. Your yoga clients can now access your models using yoga client.
+
+# CORS issues
+
+If your Yoga server is running in a domain different than your Yoga client, you may have some CORS issues. To solve this, we recomend the use of [spatie/cors library](https://github.com/spatie/laravel-cors)

@@ -54,7 +54,7 @@ trait IdentityAndPassword
     }
 
     if ($validator->fails()) {
-      return Yoga::reject($validator->errors());
+      return Yoga::reject($validator->errors()->first());
     }
 
     $credentials = $request->input('credentials');
@@ -101,28 +101,28 @@ trait IdentityAndPassword
       return Yoga::reject(__('Create users not enable'));
     }
 
+    // Get validation fields
+    $fields = array_keys(config('yoga.auth.create_user_rules', []));
+    $validationData = $request->only($fields);
+
     // Validar requisição
+    $validator = Validator::make($validationData, config('yoga.auth.create_user_rules', []));
+    if ($validator->fails()) {
+      return Yoga::reject($validator->errors()->first());
+    }
 
-    $validatedData = $request->validate(
-      config('yoga.auth.create_user_rules', [])
-    );
-
-    $validatedData['password'] = Hash::make($validatedData['password']);
+    $validationData['password'] = Hash::make($validationData['password']);
 
     // Criar novo usuario
-
-    $user = $this->authenticable::create($validatedData);
+    $user = $this->authenticable::create($validationData);
 
     // Logar o novo usuario
-
     $user->createToken();
-
     return Yoga::resolve([
       'access_token' => $user->getAccessToken(),
       'token_type' => 'Bearer',
       'expires_at' => date('Y-m-d H:i:s', strtotime('+1 day'))
     ]);
-
   }
 
   function updateProfile(Request $request) {
