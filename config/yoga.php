@@ -13,6 +13,12 @@ return [
       'name' => 'required|min:2',
       'email' => 'required|email|unique:users,email',
       'password' => 'required|min:6|max:16'
+    ],
+    'enable_update_user' => true,
+    'update_user_rules' => [
+      'name' => 'required|min:2',
+      'email' => 'required|email|unique:users,email',
+      'password' => 'nullable|min:6|max:16'
     ]
   ],
   'routes' => [
