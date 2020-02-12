@@ -14,7 +14,7 @@ class YogaServerController
   function __construct()
   {
     $this->resources = config('yoga.resources');
-    $this->callables = array_merge($this->resources, config('whitelist'));
+    $this->callables = array_merge($this->resources, config('yoga.whitelist', []));
   }
 
   function index(Request $request)
